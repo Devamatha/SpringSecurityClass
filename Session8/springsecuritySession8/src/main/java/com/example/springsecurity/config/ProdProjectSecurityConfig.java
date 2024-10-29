@@ -2,6 +2,8 @@ package com.example.springsecurity.config;
 
 import com.example.springsecurity.exceptionhandle.CustomAccessDeniedHandler;
 import com.example.springsecurity.exceptionhandle.CustomBasicAuthenticationEntryPoint;
+import com.example.springsecurity.filter.CsrfCookieFilter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -11,6 +13,13 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.Collections;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -21,9 +30,24 @@ public class ProdProjectSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         //  http.authorizeHttpRequests((requests) -> requests.anyRequest().denyAll());
         // http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll();
-
-        http.requiresChannel(rcc -> rcc.anyRequest().requiresSecure()).
-                csrf(crsf -> crsf.disable()).authorizeHttpRequests(
+        CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
+        http.cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource() {
+                    @Override
+                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+                        CorsConfiguration config = new CorsConfiguration();
+                        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+                        config.setAllowedMethods(Collections.singletonList("*"));
+                        config.setAllowCredentials(true);
+                        config.setAllowedHeaders(Collections.singletonList("*"));
+                        config.setMaxAge(3600L);
+                        return config;
+                    }
+                })).
+                csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler).ignoringRequestMatchers("/contact", "/register").
+                        csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class).
+                requiresChannel(rcc -> rcc.anyRequest().requiresSecure()).
+                authorizeHttpRequests(
                         (requests) -> requests.requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices").authenticated().
                                 requestMatchers("/welcome", "/contactus", "/register").permitAll());
         http.formLogin(withDefaults());

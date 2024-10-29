@@ -4,4 +4,6 @@ import com.example.springsecurity.entity.Accounts;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountsRepository extends JpaRepository<Accounts, Integer> {
+    Accounts findByCustomerId(long customerId);
+
 }

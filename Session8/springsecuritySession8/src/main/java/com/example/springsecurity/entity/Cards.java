@@ -1,4 +1,5 @@
 package com.example.springsecurity.entity;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,7 +8,8 @@ import lombok.Setter;
 import java.sql.Date;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @Table(name = "cards")
 public class Cards {
 
