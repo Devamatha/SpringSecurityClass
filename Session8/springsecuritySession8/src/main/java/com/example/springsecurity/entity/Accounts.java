@@ -35,7 +35,7 @@ public class Accounts {
     @Column(name = "create_dt")
     private Date createDt;
 
-    @ManyToOne
+    @OneToOne
     @JsonBackReference
     @JoinColumn(name = "customer_id")
     private Customer customer;

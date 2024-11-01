@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -32,7 +33,9 @@ public class ProjectSecurityConfig {
         // http.authorizeHttpRequests((requests) -> requests.anyRequest().permitAll();
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
 
-        http.cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource() {
+        http.securityContext(contextConfig -> contextConfig.requireExplicitSave(false))
+                .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .cors(corsConfig -> corsConfig.configurationSource(new CorsConfigurationSource() {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
@@ -44,12 +47,12 @@ public class ProjectSecurityConfig {
                         return config;
                     }
                 })).
-                csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler).ignoringRequestMatchers("/contact", "/register").
+                csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler).ignoringRequestMatchers("/contactus", "/register").
                         csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class).
                 requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()).
                 authorizeHttpRequests(
-                        (requests) -> requests.requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices").authenticated().
+                        (requests) -> requests.requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices","/api/customer/user").authenticated().
                                 requestMatchers("/welcome", "/contactus", "/register").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));

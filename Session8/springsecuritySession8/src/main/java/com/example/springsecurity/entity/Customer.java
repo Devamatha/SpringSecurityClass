@@ -46,9 +46,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<AccountTransaction> accountTransactionList = new ArrayList<>();
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "customer")
-    private List<Accounts> accountsList = new ArrayList<>();
+//    @JsonManagedReference
+//    @OneToOne(mappedBy = "customer")
+//    private List<Accounts> accountsList = new ArrayList<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "customer")
