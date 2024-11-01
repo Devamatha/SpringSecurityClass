@@ -56,7 +56,7 @@ public class ProjectSecurityConfig {
                                 //requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices","/api/customer/user").authenticated().
 
                                 //                                requestMatchers("/getCards").hasAuthority("VIEWCARDS").
-//                                requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT","VIEWCARDS).
+//                                requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT","VIEWCARDS").
 //                                requestMatchers("/myBalance").hasAuthority("VIEWBALANCE").
 //                                requestMatchers( "/getLoans").hasAuthority("VIEWLOANS").
 //                                requestMatchers("/getNotices").hasAuthority("VIEWNOTICES").
@@ -64,7 +64,7 @@ public class ProjectSecurityConfig {
                                 requestMatchers("/myAccount").hasAnyRole("USER","ADMIN").
                                 requestMatchers("/myBalance").hasRole("USER").
                                 requestMatchers( "/getLoans").hasRole("USER").
-                                requestMatchers("/getNotices").hasRole("USER")
+                                requestMatchers("/getNotices").hasRole("USER").
                                 requestMatchers("/welcome", "/contactus", "/register").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));

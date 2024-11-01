@@ -12,7 +12,6 @@ import com.example.springsecurity.entity.Authority;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter

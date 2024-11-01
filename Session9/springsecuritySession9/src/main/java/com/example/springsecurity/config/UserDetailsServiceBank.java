@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceBank implements UserDetailsService {
@@ -22,9 +23,11 @@ public class UserDetailsServiceBank implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Customer customers = customerRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
 //        List<GrantedAuthority> authorityList = List.of(new SimpleGrantedAuthority(customers.getRole()));
+        System.err.println(customers.getAuthorities()+"AuthorityAuthorizationDecision");
 
-        List<GrantedAuthority> authorities = customer.getAuthorities().stream().map(authority -> new
+        List<GrantedAuthority> authorities = customers.getAuthorities().stream().map(authority -> new
                 SimpleGrantedAuthority(authority.getName())).collect(Collectors.toList());
+        System.err.println(authorities+"AuthorityAuthorizationDecision");
         return new User(customers.getEmail(), customers.getPwd(), authorities);
     }
 }
