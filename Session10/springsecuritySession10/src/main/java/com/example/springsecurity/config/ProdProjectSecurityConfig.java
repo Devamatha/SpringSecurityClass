@@ -2,7 +2,10 @@ package com.example.springsecurity.config;
 
 import com.example.springsecurity.exceptionhandle.CustomAccessDeniedHandler;
 import com.example.springsecurity.exceptionhandle.CustomBasicAuthenticationEntryPoint;
+import com.example.springsecurity.filter.AuthoritiesLoggingAfterFilter;
+import com.example.springsecurity.filter.AuthoritiesLoggingAtFilter;
 import com.example.springsecurity.filter.CsrfCookieFilter;
+import com.example.springsecurity.filter.RequestValidationBeforeFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +51,11 @@ public class ProdProjectSecurityConfig {
                 })).
                 csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler).ignoringRequestMatchers("/contact", "/register").
                         csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class).
+ .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class).
+
                 requiresChannel(rcc -> rcc.anyRequest().requiresSecure()).
                 authorizeHttpRequests(
                         (requests) -> requests.
@@ -68,7 +75,7 @@ public class ProdProjectSecurityConfig {
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
-       // http.httpBasic(withDefaults());
+        //http.httpBasic(withDefaults());
         return http.build();
     }
 
