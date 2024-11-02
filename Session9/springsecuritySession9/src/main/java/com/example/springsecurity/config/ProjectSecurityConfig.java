@@ -49,27 +49,23 @@ public class ProjectSecurityConfig {
                 })).
                 csrf(csrf -> csrf.csrfTokenRequestHandler(csrfTokenRequestAttributeHandler).ignoringRequestMatchers("/contactus", "/register").
                         csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class).
-                requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()).
-                authorizeHttpRequests(
-                        (requests) -> requests.
-                                //requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices","/api/customer/user").authenticated().
-
-                                //                                requestMatchers("/getCards").hasAuthority("VIEWCARDS").
-//                                requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT","VIEWCARDS").
-//                                requestMatchers("/myBalance").hasAuthority("VIEWBALANCE").
-//                                requestMatchers( "/getLoans").hasAuthority("VIEWLOANS").
-//                                requestMatchers("/getNotices").hasAuthority("VIEWNOTICES").
-                                requestMatchers("/getCards").hasRole("USER").
-                                requestMatchers("/myAccount").hasAnyRole("USER","ADMIN").
-                                requestMatchers("/myBalance").hasRole("USER").
-                                requestMatchers( "/getLoans").hasRole("USER").
-                                requestMatchers("/getNotices").hasRole("USER").
-                                requestMatchers("/welcome", "/contactus", "/register").permitAll());
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .requiresChannel(rcc -> rcc.anyRequest().requiresInsecure()).
+                authorizeHttpRequests((requests) -> requests.
+//                        requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT","VIEWCARDS")
+//                        .requestMatchers("/myBalance").hasAuthority("VIEWBALANCE")
+//                        .requestMatchers( "/getLoans").hasAuthority("VIEWLOANS")
+//                        .requestMatchers("/getNotices").hasAuthority("VIEWNOTICES")
+                        requestMatchers("/getCards").hasRole("USER")
+                        .requestMatchers("/myAccount").hasAnyRole("USER","ADMIN")
+                        .requestMatchers("/myBalance").hasRole("USER")
+                       .requestMatchers( "/getLoans").hasRole("USER")
+                        .requestMatchers("/getNotices").hasRole("USER")
+                        .requestMatchers("/welcome", "/contactus", "/register").permitAll());
         http.formLogin(withDefaults());
         http.httpBasic(hbc -> hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         http.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
-        http.httpBasic(withDefaults());
+       // http.httpBasic(withDefaults());
         return http.build();
     }
 

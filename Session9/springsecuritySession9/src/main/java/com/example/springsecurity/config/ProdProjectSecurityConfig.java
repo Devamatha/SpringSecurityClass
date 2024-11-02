@@ -54,11 +54,11 @@ public class ProdProjectSecurityConfig {
                         (requests) -> requests.
 //                                requestMatchers("/getCards", "/myAccount", "/myBalance", "/getLoans", "/getNotices").authenticated().
 //
-//                                requestMatchers("/getCards").hasAuthority("VIEWCARDS").
-//                                requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT","VIEWCARDS").
-//                                requestMatchers("/myBalance").hasAuthority("VIEWBALANCE").
-//                                requestMatchers( "/getLoans").hasAuthority("VIEWLOANS").
-//                                requestMatchers("/getNotices").hasAuthority("VIEWNOTICES").
+                                requestMatchers("/getCards").hasAuthority("VIEWCARDS").
+                                requestMatchers("/myAccount").hasAnyAuthority("VIEWACCOUNT","VIEWCARDS").
+                                requestMatchers("/myBalance").hasAuthority("VIEWBALANCE").
+                                requestMatchers( "/getLoans").hasAuthority("VIEWLOANS").
+                                requestMatchers("/getNotices").hasAuthority("VIEWNOTICES").
                                 requestMatchers("/getCards").hasRole("USER").
                                 requestMatchers("/myAccount").hasAnyRole("USER","ADMIN").
                                 requestMatchers("/myBalance").hasRole("USER").
